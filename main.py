@@ -48,7 +48,7 @@ UPLOAD_FOLDER = "captured_photos"
 IMAGE_SOURCE = "IMG_1779.jpg"          # default image served
 ADMIN_PASSWORD = "admin123"
 SECRET_KEY = "change-this-secret-key-in-production"
-SERVER_BASE_URL = "http://192.168.1.9:5000"   # change to your domain
+SERVER_BASE_URL = os.environ.get("SERVER_BASE_URL", "http://localhost:8000")   # set via env var in Back4App
 STEGO_WATERMARK = False            # set True to embed invisible watermark
 WATERMARK_TEXT = SERVER_BASE_URL
 
@@ -387,7 +387,7 @@ if __name__ == '__main__':
     parser.add_argument('--watermark', action='store_true', help="Embed invisible watermark with server URL")
     parser.add_argument('--server', action='store_true', help="Start the Flask tracking server")
     parser.add_argument('--host', default='0.0.0.0', help="Server bind address")
-    parser.add_argument('--port', type=int, default=5000, help="Server port")
+    parser.add_argument('--port', type=int, default=int(os.environ.get("PORT", 8000)), help="Server port")
     parser.add_argument('--image', default='photo.jpg', help="Image file to serve for tracking")
     args = parser.parse_args()
 
